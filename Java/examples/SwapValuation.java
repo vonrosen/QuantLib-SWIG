@@ -314,23 +314,23 @@ public class SwapValuation {
 		System.out.println(fairSpread);
 		System.out.println(fairRate);
 
-        forecastingTermStructure.linkTo(depoFRASwapTermStructure);
-        discountingTermStructure.linkTo(depoFRASwapTermStructure);
+		forecastingTermStructure.linkTo(depoFRASwapTermStructure);
+		discountingTermStructure.linkTo(depoFRASwapTermStructure);
 
-        NPV = spot5YearSwap.NPV();
-        fairSpread = spot5YearSwap.fairSpread();
-        fairRate = spot5YearSwap.fairRate();
+		NPV = spot5YearSwap.NPV();
+		fairSpread = spot5YearSwap.fairSpread();
+		fairRate = spot5YearSwap.fairRate();
 
 		System.out.println(NPV);
 		System.out.println(fairSpread);
 		System.out.println(fairRate);
 
-        forecastingTermStructure.linkTo(depoSwapTermStructure);
-        discountingTermStructure.linkTo(depoSwapTermStructure);
+		forecastingTermStructure.linkTo(depoSwapTermStructure);
+		discountingTermStructure.linkTo(depoSwapTermStructure);
 
-        NPV = oneYearForward5YearSwap.NPV();
-        fairSpread = oneYearForward5YearSwap.fairSpread();
-        fairRate = oneYearForward5YearSwap.fairRate();
+		NPV = oneYearForward5YearSwap.NPV();
+		fairSpread = oneYearForward5YearSwap.fairSpread();
+		fairRate = oneYearForward5YearSwap.fairRate();
 
 		System.out.println(NPV);
 		System.out.println(fairSpread);
