@@ -82,7 +82,6 @@ CSharp/csharp/*.cs
 CSharp/NQuantLib.dll
 Guile/QuantLib.scm
 Java/QuantLib.jar
-Java/org/
 OCaml/*.cmi
 OCaml/*.cmo
 OCaml/*.ml
@@ -93,3 +92,4 @@ Python/build
 R/R/QuantLib.R
 R/QuantLib.RData
 
+/bin/
