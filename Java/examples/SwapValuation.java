@@ -45,8 +45,7 @@ public class SwapValuation {
 	public static void main(String[] args) {
 		TARGET calendar = new TARGET();
 		Date settlementDate = new Date(22, Month.September, 2004);
-
-		calendar.adjust(settlementDate);
+		settlementDate = calendar.adjust(settlementDate);
 
 		int fixingDays = 2;
 
@@ -207,6 +206,7 @@ public class SwapValuation {
 		depoSwapInstruments.add(s10y);
 		depoSwapInstruments.add(s15y);
 
+		//this is the zero curve!
 		YieldTermStructure depoSwapTermStructure = new PiecewiseFlatForward(settlementDate, depoSwapInstruments,
 				termStructureDayCounter);
 
@@ -276,22 +276,36 @@ public class SwapValuation {
 		Type swapType = VanillaSwap.Payer;
 
 		Date maturity = settlementDate.add(new Period(lenghtInYears, TimeUnit.Years));
-		Schedule fixedSchedule = new Schedule(settlementDate, maturity, new Period(fixedLegFrequency), calendar,
-				fixedLegConvention, fixedLegConvention, DateGeneration.Rule.Forward, false);
 
-		Schedule floatSchedule = new Schedule(settlementDate, maturity, new Period(floatingLegFrequency), calendar,
-				floatingLegConvention, floatingLegConvention, DateGeneration.Rule.Forward, false);
-		VanillaSwap spot5YearSwap = new VanillaSwap(swapType, nominal, fixedSchedule, fixedRate, fixedLegDayCounter,
-				floatSchedule, euriborIndex, spread, floatingLegDayCounter);
+		Schedule fixedSchedule = new Schedule(
+				settlementDate,
+				maturity,
+				new Period(fixedLegFrequency),
+				calendar,
+				fixedLegConvention,
+				fixedLegConvention,
+				DateGeneration.Rule.Forward,
+				false);
 
-		Date fwdStart = calendar.advance(settlementDate, 1, TimeUnit.Years);
-		Date fwdMaturity = fwdStart.add(new Period(lenghtInYears, TimeUnit.Years));
-		Schedule fwdFixedSchedule = new Schedule(fwdStart, fwdMaturity, new Period(fixedLegFrequency), calendar,
-				fixedLegConvention, fixedLegConvention, DateGeneration.Rule.Forward, false);
-		Schedule fwdFloatSchedule = new Schedule(fwdStart, fwdMaturity, new Period(floatingLegFrequency), calendar,
-				floatingLegConvention, floatingLegConvention, DateGeneration.Rule.Forward, false);
-		VanillaSwap oneYearForward5YearSwap = new VanillaSwap(swapType, nominal, fwdFixedSchedule, fixedRate,
-				fixedLegDayCounter, fwdFloatSchedule, euriborIndex, spread, floatingLegDayCounter);
+		Schedule floatSchedule = new Schedule(
+				settlementDate,
+				maturity,
+				new Period(floatingLegFrequency),
+				calendar,
+				floatingLegConvention,
+				floatingLegConvention,
+				DateGeneration.Rule.Forward,
+				false);
+
+		VanillaSwap spot5YearSwap = new VanillaSwap(swapType,
+				nominal,
+				fixedSchedule,
+				fixedRate,
+				fixedLegDayCounter,
+				floatSchedule,
+				euriborIndex,
+				spread,
+				floatingLegDayCounter);
 
 		double NPV;
 		double fairRate;
@@ -300,7 +314,6 @@ public class SwapValuation {
 		PricingEngine swapEngine = new DiscountingSwapEngine(discountingTermStructure);
 
 		spot5YearSwap.setPricingEngine(swapEngine);
-		oneYearForward5YearSwap.setPricingEngine(swapEngine);
 
 		// Of course, you're not forced to really use different curves
 		forecastingTermStructure.linkTo(depoSwapTermStructure);
@@ -314,6 +327,16 @@ public class SwapValuation {
 		System.out.println(fairSpread);
 		System.out.println(fairRate);
 
+		Date fwdStart = calendar.advance(settlementDate, 1, TimeUnit.Years);
+		Date fwdMaturity = fwdStart.add(new Period(lenghtInYears, TimeUnit.Years));
+		Schedule fwdFixedSchedule = new Schedule(fwdStart, fwdMaturity, new Period(fixedLegFrequency), calendar,
+				fixedLegConvention, fixedLegConvention, DateGeneration.Rule.Forward, false);
+		Schedule fwdFloatSchedule = new Schedule(fwdStart, fwdMaturity, new Period(floatingLegFrequency), calendar,
+				floatingLegConvention, floatingLegConvention, DateGeneration.Rule.Forward, false);
+		VanillaSwap oneYearForward5YearSwap = new VanillaSwap(swapType, nominal, fwdFixedSchedule, fixedRate,
+				fixedLegDayCounter, fwdFloatSchedule, euriborIndex, spread, floatingLegDayCounter);
+		oneYearForward5YearSwap.setPricingEngine(swapEngine);
+
 		forecastingTermStructure.linkTo(depoFRASwapTermStructure);
 		discountingTermStructure.linkTo(depoFRASwapTermStructure);
 
@@ -321,9 +344,9 @@ public class SwapValuation {
 		fairSpread = spot5YearSwap.fairSpread();
 		fairRate = spot5YearSwap.fairRate();
 
-		System.out.println(NPV);
-		System.out.println(fairSpread);
-		System.out.println(fairRate);
+		//System.out.println(NPV);
+		//System.out.println(fairSpread);
+		//System.out.println(fairRate);
 
 		forecastingTermStructure.linkTo(depoSwapTermStructure);
 		discountingTermStructure.linkTo(depoSwapTermStructure);
@@ -332,8 +355,8 @@ public class SwapValuation {
 		fairSpread = oneYearForward5YearSwap.fairSpread();
 		fairRate = oneYearForward5YearSwap.fairRate();
 
-		System.out.println(NPV);
-		System.out.println(fairSpread);
-		System.out.println(fairRate);
+		//System.out.println(NPV);
+		//System.out.println(fairSpread);
+		//System.out.println(fairRate);
 	}
 }
