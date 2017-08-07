@@ -1,36 +1,36 @@
 package examples;
 
-import org.quantlib.Actual360;
-import org.quantlib.ActualActual;
-import org.quantlib.BusinessDayConvention;
-import org.quantlib.Date;
-import org.quantlib.DateGeneration;
-import org.quantlib.DayCounter;
-import org.quantlib.DepositRateHelper;
-import org.quantlib.DiscountingSwapEngine;
-import org.quantlib.Euribor6M;
-import org.quantlib.FraRateHelper;
-import org.quantlib.Frequency;
-import org.quantlib.FuturesRateHelper;
-import org.quantlib.IMM;
-import org.quantlib.IborIndex;
-import org.quantlib.Month;
-import org.quantlib.Period;
-import org.quantlib.PiecewiseFlatForward;
-import org.quantlib.PricingEngine;
-import org.quantlib.RateHelper;
-import org.quantlib.RateHelperVector;
-import org.quantlib.RelinkableYieldTermStructureHandle;
-import org.quantlib.Schedule;
-import org.quantlib.Settings;
-import org.quantlib.SwapRateHelper;
-import org.quantlib.TARGET;
-import org.quantlib.Thirty360;
-import org.quantlib.Thirty360.Convention;
-import org.quantlib.TimeUnit;
-import org.quantlib.VanillaSwap;
-import org.quantlib.YieldTermStructure;
-import org.quantlib._VanillaSwap.Type;
+import org.vonrosen.quantlib.Actual360;
+import org.vonrosen.quantlib.ActualActual;
+import org.vonrosen.quantlib.BusinessDayConvention;
+import org.vonrosen.quantlib.Date;
+import org.vonrosen.quantlib.DateGeneration;
+import org.vonrosen.quantlib.DayCounter;
+import org.vonrosen.quantlib.DepositRateHelper;
+import org.vonrosen.quantlib.DiscountingSwapEngine;
+import org.vonrosen.quantlib.Euribor6M;
+import org.vonrosen.quantlib.FraRateHelper;
+import org.vonrosen.quantlib.Frequency;
+import org.vonrosen.quantlib.FuturesRateHelper;
+import org.vonrosen.quantlib.IMM;
+import org.vonrosen.quantlib.IborIndex;
+import org.vonrosen.quantlib.Month;
+import org.vonrosen.quantlib.Period;
+import org.vonrosen.quantlib.PiecewiseFlatForward;
+import org.vonrosen.quantlib.PricingEngine;
+import org.vonrosen.quantlib.RateHelper;
+import org.vonrosen.quantlib.RateHelperVector;
+import org.vonrosen.quantlib.RelinkableYieldTermStructureHandle;
+import org.vonrosen.quantlib.Schedule;
+import org.vonrosen.quantlib.Settings;
+import org.vonrosen.quantlib.SwapRateHelper;
+import org.vonrosen.quantlib.TARGET;
+import org.vonrosen.quantlib.Thirty360;
+import org.vonrosen.quantlib.Thirty360.Convention;
+import org.vonrosen.quantlib.TimeUnit;
+import org.vonrosen.quantlib.VanillaSwap;
+import org.vonrosen.quantlib.YieldTermStructure;
+import org.vonrosen.quantlib._VanillaSwap.Type;
 
 public class SwapValuation {
 
@@ -110,8 +110,14 @@ public class SwapValuation {
 		 */
 		DayCounter depositDayCounter = new Actual360();
 
-		RateHelper d1w = new DepositRateHelper(d1wQuote, new Period(1, TimeUnit.Weeks), fixingDays, calendar,
-				BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
+		RateHelper d1w = new DepositRateHelper(
+				d1wQuote,
+				new Period(1, TimeUnit.Weeks),
+				fixingDays,
+				calendar,
+				BusinessDayConvention.ModifiedFollowing,
+				true,
+				depositDayCounter);
 
 		RateHelper d1m = new DepositRateHelper(d1mQuote, new Period(1, TimeUnit.Months), fixingDays, calendar,
 				BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
@@ -297,7 +303,16 @@ public class SwapValuation {
 				DateGeneration.Rule.Forward,
 				false);
 
-		VanillaSwap spot5YearSwap = new VanillaSwap(swapType,
+		//		IborIndex euriborIndex = new Euribor6M(forecastingTermStructure);
+
+		//		YieldTermStructure depoSwapTermStructure = new PiecewiseFlatForward(settlementDate,
+		//		depoSwapInstruments,
+		//		termStructureDayCounter);
+
+		//		RateHelperVector depoSwapInstruments = new RateHelperVector();
+		//		depoSwapInstruments.add(d1w);
+		VanillaSwap spot5YearSwap = new VanillaSwap(
+				swapType,
 				nominal,
 				fixedSchedule,
 				fixedRate,
@@ -307,10 +322,6 @@ public class SwapValuation {
 				spread,
 				floatingLegDayCounter);
 
-		double NPV;
-		double fairRate;
-		double fairSpread;
-
 		PricingEngine swapEngine = new DiscountingSwapEngine(discountingTermStructure);
 
 		spot5YearSwap.setPricingEngine(swapEngine);
@@ -319,7 +330,12 @@ public class SwapValuation {
 		forecastingTermStructure.linkTo(depoSwapTermStructure);
 		discountingTermStructure.linkTo(depoSwapTermStructure);
 
+		double NPV;
+		double fairRate;
+		double fairSpread;
+
 		NPV = spot5YearSwap.NPV();
+
 		fairSpread = spot5YearSwap.fairSpread();
 		fairRate = spot5YearSwap.fairRate();
 
@@ -327,7 +343,7 @@ public class SwapValuation {
 		System.out.println(fairSpread);
 		System.out.println(fairRate);
 
-		Date fwdStart = calendar.advance(settlementDate, 1, TimeUnit.Years);
+/*		Date fwdStart = calendar.advance(settlementDate, 1, TimeUnit.Years);
 		Date fwdMaturity = fwdStart.add(new Period(lenghtInYears, TimeUnit.Years));
 		Schedule fwdFixedSchedule = new Schedule(fwdStart, fwdMaturity, new Period(fixedLegFrequency), calendar,
 				fixedLegConvention, fixedLegConvention, DateGeneration.Rule.Forward, false);
@@ -343,18 +359,18 @@ public class SwapValuation {
 		NPV = spot5YearSwap.NPV();
 		fairSpread = spot5YearSwap.fairSpread();
 		fairRate = spot5YearSwap.fairRate();
-
+*/
 		//System.out.println(NPV);
 		//System.out.println(fairSpread);
 		//System.out.println(fairRate);
 
-		forecastingTermStructure.linkTo(depoSwapTermStructure);
+/*		forecastingTermStructure.linkTo(depoSwapTermStructure);
 		discountingTermStructure.linkTo(depoSwapTermStructure);
 
 		NPV = oneYearForward5YearSwap.NPV();
 		fairSpread = oneYearForward5YearSwap.fairSpread();
 		fairRate = oneYearForward5YearSwap.fairRate();
-
+*/
 		//System.out.println(NPV);
 		//System.out.println(fairSpread);
 		//System.out.println(fairRate);
