@@ -21,10 +21,10 @@ quantlib_wrap.o: quantlib_wrap.cpp quantlib_wrap.h
 libQuantLibJNI.@JNILIB_EXTENSION@: quantlib_wrap.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) @SHARED_LIB@ quantlib_wrap.o -o libQuantLibJNI.@JNILIB_EXTENSION@ `quantlib-config --libs`
 
-QuantLib.jar: quantlib_wrap.cpp org/vonrosen/quantlib/*.java
+QuantLib.jar: quantlib_wrap.cpp com/github/vonrosen/quantlib/*.java
 	mkdir -p bin
-	find org/vonrosen/quantlib -name '*.java' | xargs $(JAVAC) -g -d bin
-	$(JAR) cf QuantLib.jar -C bin org
+	find com/github/vonrosen/quantlib -name '*.java' | xargs $(JAVAC) -g -d bin
+	$(JAR) cf QuantLib.jar -C bin com
 
 install-exec-local:
 	cp -p libQuantLibJNI.@JNILIB_EXTENSION@ $(DESTDIR)/$(libdir)/libQuantLibJNI.@JNILIB_EXTENSION@
@@ -40,20 +40,20 @@ endif
 
 
 quantlib_wrap.cpp: ../SWIG/*.i
-	mkdir -p org/vonrosen/quantlib
-	$(SWIG) -java -c++ -outdir org/vonrosen/quantlib \
-            -package org.vonrosen.quantlib -o quantlib_wrap.cpp ../SWIG/quantlib.i
+	mkdir -p com/github/vonrosen/quantlib
+	$(SWIG) -java -c++ -outdir com/github/vonrosen/quantlib \
+            -package com.github.vonrosen.quantlib -o quantlib_wrap.cpp ../SWIG/quantlib.i
 
 dist-hook:
-	mkdir -p $(distdir)/org/vonrosen/quantlib
-	cp ./org/vonrosen/quantlib/*.java $(distdir)/org/vonrosen/quantlib
+	mkdir -p $(distdir)/com/github/vonrosen/quantlib
+	cp ./com/github/vonrosen/quantlib/*.java $(distdir)/com/github/vonrosen/quantlib
 	touch $(distdir)/quantlib_wrap.cpp
 	touch $(distdir)/quantlib_wrap.h
 	mkdir -p $(distdir)/examples
 	cp ./examples/*.java $(distdir)/examples
 
 clean-local:
-	rm -rf org 
+	rm -rf com
 	rm -f examples/*.class
 	rm -f quantlib_wrap.o
 	rm -rf bin
