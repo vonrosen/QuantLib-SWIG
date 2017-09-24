@@ -117,4 +117,4 @@
                0.0
                (day-counter :thirty360)
                swap-engine)]    
-    (prn (npv swap-engine swap))))
+    (prn (npv swap))))
