@@ -3,13 +3,27 @@ CLEANFILES = quantlib_wrap.cpp libQuantLibJNI.@JNILIB_EXTENSION@ QuantLib.jar
 
 BUILT_SOURCES = quantlib_wrap.cpp quantlib_wrap.h
 
-EXAMPLES = Bonds DiscreteHedging EquityOptions FRA UnaryFunctions
+EXAMPLES = Bonds CallableBonds CallableBondsOAS DiscreteHedging EquityOptions FRA UnaryFunctions
+
+SWIGFLAGS =
+
+if JAVA_AUTOLOAD
+SWIGFLAGS += -DJAVA_AUTOLOAD
+endif
+
+if JAVA_FINALIZER
+SWIGFLAGS += -DJAVA_FINALIZER
+endif
+
+if JAVA_AUTOCLOSEABLE
+SWIGFLAGS += -DJAVA_AUTOCLOSEABLE
+endif
 
 if HAVE_JAVA
 if BUILD_JAVA
 
 examples/%.class: examples/%.java QuantLib.jar
-	$(JAVAC) -source 1.5 -cp QuantLib.jar examples/$*.java
+	$(JAVAC)  -cp QuantLib.jar examples/$*.java
 
 .PHONY: $(EXAMPLES)
 
@@ -27,6 +41,7 @@ QuantLib.jar: quantlib_wrap.cpp com/github/vonrosen/quantlib/*.java
 	$(JAR) cf QuantLib.jar -C bin com
 
 install-exec-local:
+	mkdir -p $(DESTDIR)/$(libdir)
 	cp -p libQuantLibJNI.@JNILIB_EXTENSION@ $(DESTDIR)/$(libdir)/libQuantLibJNI.@JNILIB_EXTENSION@
 	cp -p QuantLib.jar $(DESTDIR)/$(libdir)/QuantLib.jar
 
@@ -41,7 +56,7 @@ endif
 
 quantlib_wrap.cpp: ../SWIG/*.i
 	mkdir -p com/github/vonrosen/quantlib
-	$(SWIG) -java -c++ -outdir com/github/vonrosen/quantlib \
+	$(SWIG) $(SWIGFLAGS) -java -c++ -outdir com/github/vonrosen/quantlib \
             -package com.github.vonrosen.quantlib -o quantlib_wrap.cpp ../SWIG/quantlib.i
 
 dist-hook:
